@@ -1,0 +1,45 @@
+/* Increase the logo size and position it at the top-right */
+.workshop-logo {
+  position: fixed;
+  bottom: 20px;
+  width: auto;
+  height: 70px;
+  max-width: 180px;
+  object-fit: contain;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.workshop-logo-left {
+  left: 28px;
+  height: 65px;
+}
+
+.workshop-logo-right {
+  right: 28px;
+  height: 80px;
+}
+
+
+.reveal table {
+  width: 95%;
+  font-size: 0.82em;
+}
+
+.reveal table th,
+.reveal table td {
+  padding: 0.45em 0.7em;
+  vertical-align: middle;
+}
+
+.reveal table th:first-child,
+.reveal table td:first-child {
+  width: 22%;
+  white-space: nowrap;
+}
+
+.reveal table tbody tr:nth-child(4) {
+  background-color: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  font-weight: 600;
+}

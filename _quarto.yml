@@ -1,0 +1,15 @@
+project:
+  type: default
+
+format:
+  revealjs:
+    theme: black
+    slide-number: true
+    show-slide-number: all
+    transition: fade
+    incremental: false
+    code-line-numbers: true
+    include-after-body: logos.html
+    css: styles.css    
+    width: 1600
+    height: 900
