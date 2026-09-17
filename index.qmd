@@ -115,7 +115,7 @@ By the end of this session, you will be able to:
 [Complete installation guide](https://diamondlightsource.github.io/httomo/howto/installation.html)
 :::
 
-## Linux: create HTTomo conda environment {.small}
+## Linux: create HTTomo conda environment {#linux_install .small}
 
 ```bash
 conda create --name httomo
@@ -173,7 +173,7 @@ HTTomo libraries can be installed natively, but the **HTTomo framework requires 
    ```
 
 4. Inside WSL, install the **Linux Miniforge** distribution.
-5. Follow the Linux/conda installation from the previous slides.
+5. Follow the [Linux/conda](#linux_install) installation.
 
 ::: {.callout-note}
 WSL supports compatible NVIDIA CUDA GPUs. If `httomolib` needs a compiler, run `sudo apt-get install gcc` inside WSL.
