@@ -269,12 +269,16 @@ You should now have:
 
 ## HTTomo framework (main concepts)
 
-## 
+## {#mpi_figure}
 
 ![](images/mpi_chunks_reslice_oriented.svg){
   width=100%
   fig-alt="HTTomo inner workings: MPI chunks, reslice and oriented projections"
 }
+
+::: {.footer}
+[Benefits of using Open MPI in HTTomo](#openmpi-benefits )
+:::
 
 ## 
 
@@ -306,6 +310,10 @@ You should now have:
         type="image/svg+xml"
         style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
 </object>
+
+::: {.footer}
+[Enabling own methods in HTTomo](#own_methods)
+:::
 
 
 ## 
@@ -521,7 +529,7 @@ Use the generated **synthetic transmission data** `tomodata_synth.nxs`, to corre
 1. Save your loader configuration as `pipeline_synth.yaml`. Select a small vertical preview (e.g., 10 rows/slices).
 2. Copy **normalize**, then **minus_log** from the [TomoPy YAML templates](https://diamondlightsource.github.io/httomo-backends/api/tomopy.prep.normalize.html) below the loader.
 3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) the result of **minus_log** into the HDF5 file.
-4. Validate the YAML with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
+4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
 ```bash
 python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```
@@ -564,7 +572,7 @@ Use `tomodata_synth.nxs` to remove zingers (outliers) from the projections.
 1. Use `pipeline_synth.yaml` from Exercise 1 to add **zinger removal** method using the TomoPy's [remove_outlier3d](https://tomopy.readthedocs.io/en/stable/_modules/tomopy/misc/corr.html#remove_outlier3d). 
 2. Add the appropriate [TomoPy YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.misc.corr.html) right after the loader and before any other method.
 3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) the result of **remove_outlier3d** into the HDF5 file.
-4. Validate the YAML with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
+4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
 ```bash
 python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```
@@ -611,7 +619,7 @@ Use `tomodata_synth.nxs` to remove stripes from the sinograms.
 1. Use `pipeline_synth.yaml` from Exercises 1-2 and add a **stripe removal** method from TomoPy's [selection](https://tomopy.readthedocs.io/en/stable/api/tomopy.prep.stripe.html). 
 2. Add the appropriate [TomoPy YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.prep.stripe.html) after all methods.
 3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) the result of **stripe removal** method into the HDF5 file.
-4. Validate the YAML with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
+4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
 ```bash
 python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```
@@ -649,7 +657,7 @@ TomoPy [provides](https://tomopy.readthedocs.io/en/stable/api/tomopy.prep.stripe
 1. Reconstructing: synthetic and real data
 2. Using the **center of rotation** finding methods
 3. Parameter sweeps
-3. Snapshot saving
+3. Images and snapshot saving
 4. Inspecting the logs
 
 
@@ -673,7 +681,7 @@ Reconstructing `tomodata_synth.nxs` after pre-processing.
     filter_name: shepp # Shepp-Logan filter
     init_recon: null
 ```
-3. Validate the YAML with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
+3. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
 ```bash
 python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```
@@ -698,38 +706,158 @@ TomoPy's **`gridrec`** is based on **Fourier slice theorem:** the 1D Fourier tra
 **`gridrec`** maps these Fourier samples onto a grid and inverts the transform. Reconstruction filters control the balance between resolution and noise.
 
 :::
-:::
 
 ::: {.footer}
 [Stripe/ring artefacts guide](https://sarepy.readthedocs.io)
 :::
 
-## Download the real data from TomoBank {.smaller}
+:::
+
+
+## Switch off dezinger and destripper 
+
+One can switch off dezinger and destripper to see the effect of these methods on the reconstruction.
+
+<details>
+<summary>YAML pipeline</summary>
+
+
+```yaml
+# --- Standard tomography loader for NeXus files. ---
+- method: standard_tomo
+  module_path: httomo.data.hdf.loaders
+  parameters:
+    data_path: auto
+    image_key_path: auto
+    rotation_angles: auto
+    preview:
+      detector_x:   # horizontal data previewing/cropping.
+        # when null, the full data dimension is used, i.e., no previewing
+        start: null
+        stop: null
+      detector_y:
+        start: mid
+        start_offset : -10
+        stop: mid
+        stop_offset : 10    
+    darks: null
+    flats: null
+# - method: remove_outlier3d
+#   module_path: tomopy.misc.corr
+#   parameters:
+#     dif: 10000
+#     size: 3  
+- method: normalize
+  module_path: tomopy.prep.normalize
+  parameters:
+    cutoff: null
+    averaging: mean
+# - method: remove_stripe_fw
+#   module_path: tomopy.prep.stripe
+#   parameters:
+#     level: null
+#     wname: db5
+#     sigma: 2
+#     pad: true
+- method: minus_log
+  module_path: tomopy.prep.normalize
+  parameters: {}
+- method: recon
+  module_path: tomopy.recon.algorithm
+  parameters:
+    center: null
+    sinogram_order: false
+    algorithm: gridrec
+    filter_name: shepp
+    init_recon: null
+```
+</details>
+
+
+## GPU YAML pipeline for synthetic data
+
+::: {.callout-warning}
+This pipeline is for **CUDA-enabled Linux or WSL** installations. It uses the GPU backend from the `httomolibgpu` library. 
+:::
+
+<details>
+<summary>YAML GPU pipeline</summary>
+
+
+```yaml
+# --- Standard tomography loader for NeXus files. ---
+- method: standard_tomo
+  module_path: httomo.data.hdf.loaders
+  parameters:
+    data_path: auto
+    image_key_path: auto
+    rotation_angles: auto
+    preview:
+      detector_x:   # horizontal data previewing/cropping.
+        # when null, the full data dimension is used, i.e., no previewing
+        start: null
+        stop: null
+      detector_y:
+        start: mid
+        start_offset : -10
+        stop: mid
+        stop_offset : 10    
+    darks: null
+    flats: null
+# --- Removing unresponsive/dead pixels in the data, aka zingers. Use if sharp streaks are present in the reconstruction. To be applied before normalisation. ---
+- method: remove_outlier
+  module_path: httomolibgpu.misc.corr
+  parameters:
+    kernel_size: 3  # The size of the 3D neighbourhood surrounding the voxel. Odd integer.
+    dif: 1000 # A difference between the outlier value and the median value of neighbouring pixels.
+# --- Normalisation of projection data using collected flats/darks images. --- 
+- method: dark_flat_field_correction
+  module_path: httomolibgpu.prep.normalize
+  parameters:
+    flats_multiplier: 1.0
+    upper_bound: null
+    lower_bound: null
+- method: minus_log
+  module_path: httomolibgpu.prep.normalize
+  parameters: {}
+# --- stripe removal method. ---  
+- method: remove_stripe_fw
+  module_path: httomolibgpu.prep.stripe
+  parameters:
+    sigma: 2
+    wname: db5
+    level: null  
+# --- Reconstruction method. ---
+- method: LPRec3d_tomobar
+  module_path: httomolibgpu.recon.algorithm
+  parameters:
+    center: null
+    detector_pad: false # Horizontal detector padding to minimise circle/arc-type artifacts in the reconstruction. Set to 'true' to enable automatic padding or an integer
+    filter_type: shepp
+    filter_freq_cutoff: 1.0
+    recon_size: null
+    recon_mask_radius: 0.95 
+```
+</details>
+
+## Download real raw data from TomoBank {#real_data .smaller}
 
 :::: {.columns}
 
 ::: {.column width="43%"}
 
 ### 1. Download the data
-
-- Open the [TomoBank Lorentz dataset](https://tomobank.readthedocs.io/en/latest/source/data/docs.data.lorentz.html) page.
-- Follow its **Globus download link** and sign in.
-- Download **`tomo_00088.h5`** to your workshop folder.
+- [Download](https://www.swisstransfer.com/dl/01a0a9f5-b9a7-72a6-b225-7ca3eba87caa) the [TomoBank Lorentz dataset](https://tomobank.readthedocs.io/en/latest/source/data/docs.data.lorentz.html) as the **`tomo_00088.h5`** file to your workshop folder .
 
 ### 2. Configure the loader
 
-Copy the YAML on the right as the **first step** of your pipeline. Provide fololwing paths to data within the file `tomo_00088.h5`:
+Copy the loader on the right to your new pipeline, e.g., `pipeline_tomo88.yaml`. 
 
-- **projections:** `/exchange/data`
-- **darks:** `/exchange/data_dark`
-- **flats:** `/exchange/data_white`
-- **Preview:** a slab around the middle of the detector Y
+::: {.callout-note}
+As the file `tomo_00088.h5` doesn't comply with the NXTomo standard, there is a change of the paths to data within the file. We need to explicitly specify the paths to projections, darks and flats datasets.
 
-
-### 3. Add d/f correction methods
-
-
-[HTTomo real data example](https://diamondlightsource.github.io/httomo/howto/how_to_run/real_data_example.html).
+We also need to specify the rotation angles as the dataset doesn't contain them. The angles are known from the experiment.
+:::
 
 :::
 
@@ -740,7 +868,7 @@ Copy the YAML on the right as the **first step** of your pipeline. Provide folol
   module_path: httomo.data.hdf.loaders
   parameters:
     data_path: /exchange/data
-    image_key_path: null
+    image_key_path: null # no keys in the dataset
     rotation_angles:
       user_defined:
         start_angle: 0
@@ -748,10 +876,12 @@ Copy the YAML on the right as the **first step** of your pipeline. Provide folol
         angles_total: 1500
     preview:
       detector_y:
-        start: 500
-        stop: 510
+        start: mid
+        start_offset : -10
+        stop: mid
+        stop_offset : 10
     darks:
-      file: input_data
+      file: input_data 
       image_key_path: null
       data_path: /exchange/data_dark
     flats:
@@ -764,6 +894,164 @@ Copy the YAML on the right as the **first step** of your pipeline. Provide folol
 :::
 
 ::::
+
+::: {.footer}
+[HTTomo real data example](https://diamondlightsource.github.io/httomo/howto/how_to_run/real_data_example.html)
+:::
+
+
+## Centre of Rotation (CoR) estimation {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+### Background on CoR
+
+::: {style="text-align: center;"}
+![](images/CoR.png){
+  width=63%
+  fig-alt="The issue of CoR"
+}
+:::
+
+The CoR parameter can be defined as a distance $d$ that translates the coordinate system $(x,y)$ of the scanned object to the coordinate system $(s,p)$ of the acquisition device. This leads to a simple linear mapping: $(s = x \pm d, p = y)$.
+
+$d$ - should be established either experimentally or computationally. 
+
+:::
+
+::: {.column width="50%"}
+### Methods for CoR estimation
+
+In HTTomo, the CoR can be estimated by using:
+
+1. Methods that rely on the rotational symmetry of a sinogram (e.g., [Find center by N.Vo](#cor-search)) or alignment of projections ([Phase cross-correlation](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.rotation.html#tomopy.recon.rotation.find_center_pc)).
+2. Methods evaluating quality metrics of the reconstruction: [metrics-based finder](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.rotation.html#tomopy.recon.rotation.find_center)
+3. Feature that perform manual search through the [sweeping functionality](#sweeping) in HTTomo. 
+
+:::
+
+:::
+
+::: {.footer}
+[Details on CoR](https://diamondlightsource.github.io/httomo/howto/httomo_features/centering.html)
+:::
+
+## Finding the center of rotation using N.Vo method {#cor-search}
+
+<video data-autoplay loop muted playsinline controls preload="auto" poster="images/cor-search-poster.png" style="display:block; width:90%; margin:0 auto;">
+<source src="images/cor-search.mp4" type="video/mp4">
+</video>
+
+::: {style="font-size: 0.5em;"}
+Synthetic demonstration inspired by [Vo et al., Optics Express 22, 19078–19086 (2014)](https://doi.org/10.1364/OE.22.019078). In TomoPy: [`find_center_vo`](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.rotation.html#tomopy.recon.rotation.find_center_vo).
+:::
+
+
+## Side outputs {#side-outputs .smaller}
+
+A [side-output](https://diamondlightsource.github.io/httomo/howto/process_lists/side_outputs/side_out.html#side-output) is an additional result that certain methods expose for use by later methods. 
+
+Example: [HTTomo auto-centering](https://diamondlightsource.github.io/httomo/howto/httomo_features/centering.html#auto-centering) produces a **centre-of-rotation value** that reconstruction uses automatically.
+
+:::: {.columns}
+::: {.column width="55%"}
+
+### Using side outputs in YAML
+
+```{.yaml code-line-numbers="12-14|20"}
+# After pre-processing: estimate the CoR
+- method: find_center_vo
+  module_path: httomolibgpu.recon.rotation
+  parameters:
+    ind: mid
+    smin: -50
+    smax: 50
+    srad: 6
+    step: 0.25
+    ratio: 0.5
+    drop: 20
+  id: centering
+  side_outputs:
+    cor: centre_of_rotation
+
+# Reconstruction using the estimated CoR
+- method: FBP3d_tomobar
+  module_path: httomolibgpu.recon.algorithm
+  parameters:
+    center: ${{centering.side_outputs.centre_of_rotation}}
+    filter_freq_cutoff: 1.1
+    recon_size: null
+    recon_mask_radius: null
+```
+
+:::
+::: {.column width="45%"}
+
+### How the reference works
+
+1. **Identify the producer**  
+   `id: centering` names this method instance.
+
+2. **Name its result**  
+   `cor` is the exposed output key.  
+   `centre_of_rotation` is the name you assign to it.
+
+3. **Use it as a parameter**  
+   `${{…}}` tells HTTomo to resolve the reference at runtime and supply the calculated value to `center`.
+
+::: {.callout-note}
+**Method order matters:** place auto-centering before reconstruction but after preprocessing (e.g., d/f correction).
+:::
+
+:::
+::::
+
+
+## Exercise 5: reconstruction with auto-centering {.small}
+
+### Your task ~ 7 minutes
+
+Use real data `tomo_00088.h5` to perform d/f correction, auto-centering and reconstruction.
+
+1. Use `pipeline_tomo88.yaml` with the specific [loader](#real_data). 
+2. Add the [`find_center_vo`](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.rotation.html#tomopy.recon.rotation.find_center_vo) method by using the [YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.recon.rotation.html) for it.
+3. Add the `gridrec` reconstruction method using provided [YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.recon.algorithm.html).
+
+::: {.callout-note}
+Note that `center` in `parameters` points to the side output of the `find_center_vo` method by default.
+```{.yaml code-line-numbers="2"}
+  parameters:
+    center: ${{centering.side_outputs.centre_of_rotation}}
+    sinogram_order: false
+    algorithm: gridrec
+```
+:::
+
+4. Validate the YAML file and run the pipeline.
+
+## Why use Open MPI in HTTomo? {#openmpi-benefits .smaller}
+
+**Open MPI** is an open-source implementation of the **Message Passing Interface (MPI)**. It launches cooperating processes, called **ranks**, and lets them exchange data on one computer or across cluster nodes.
+
+
+### Benefits for tomography
+
+| Benefit | How HTTomo uses it |
+|:--|:--|
+| **Shorter processing time** | Ranks process different projections or reconstruct different slices concurrently. |
+| **Distributed data** | Each rank handles a portion of the main dataset. Multiple nodes provide access to more aggregate RAM. |
+| **Data exchange** | MPI enables redistribution between projection and sinogram processing patterns. |
+| **Flexible deployment** | Run a pipeline on a workstation or on allocated cluster resources. |
+
+Parallel-beam tomography offers substantial **data parallelism** as operations can run independently on different projections or sinograms.
+
+::: {.footer}
+[Data distribution in HTTomo figure](#mpi_figure)
+:::
+
+
+
+## Sweeping functionality {#sweeping .smaller}
 
 ## Parallel processing in HTTomo with MPI {.smaller}
 
@@ -817,6 +1105,8 @@ Ideal speedup is $N$; actual gains depend on disk I/O, communication and workloa
 :::
 :::
 :::
+
+## Adding your own methods to HTTomo {#own_methods .smaller}
 
 
 
