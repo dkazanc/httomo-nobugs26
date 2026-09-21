@@ -8,17 +8,19 @@ author:
     affiliation: "Diamond Light Source, UK"
 ---
 
-## Workshop agenda {.smaller}
+
+## Workshop agenda
 
 | Time | Session |
 |:---|:---|
 | **09:00–09:05** | Welcome and objectives |
-| **09:05–09:20** | **Getting started** — installation, tests run |
+| **09:05–09:20** | **Getting started** — installation, tests |
 | **09:20–09:45** | **HTTomo framework** — concepts and workflow |
 | **09:45–10:25** | **Loaders and preprocessors** — loaders, preview, pre-processing |
 | **10:25–10:45** | ☕ **Break** |
 | **10:45–11:30** | **Reconstruction, real data** — reconstruction, centering, sweeps and outputs |
-| **11:30–12:00** | **GPU processing** — acceleration and advanced pipelines |
+| **11:30–12:00** | **Advanced concepts** — large data, GPU processing, HPC |
+
 
 ## Workshop objectives
 
@@ -28,10 +30,10 @@ By the end of this session, you will be able to:
 - configure processing pipelines for CPU and GPU
 - load and preview tomography data
 - run CPU or/and GPU pipelines
+- visualise the results
 - perform parameter sweeps
-- inspect logs, snapshots and intermediate results
+- learn on more advanced concepts of HTTomo in application to GPU and HPC data processing
 
----
 
 ## 
 
@@ -40,12 +42,21 @@ By the end of this session, you will be able to:
   fig-alt="DLS"
 }
 
+::: {.footer}
+[Diamond Light Source website](https://www.diamond.ac.uk/Home.html)
+:::
+
 ## 
 
 ![](images/tomography_facilities_vector2.svg){
   width=100%
   fig-alt="Examples of tomography software associated with ESRF, APS and PSI"
 }
+
+:::{.footer}
+[Tomopedia](https://tomopedia.github.io/software/)
+:::
+
 
 ## What is HTTomo?
 
@@ -57,30 +68,36 @@ By the end of this session, you will be able to:
 
 ::: {.column width="68%"}
 
-### Designed for high-throughput tomography
+### Designed for high-throughput parallel-beam tomography
 
 - **Scalable processing** for increasingly large datasets
-- **In-memory GPU computation** with fewer host–device transfers
-- **Plug-and-play methods** using established libraries such as TomoPy
+- **GPU computation** with fewer host–device transfers
+- **Plug-and-play methods** using libraries such as TomoPy and accelerated GPU/CPU in-house libraries
 - **Independent and replaceable user-interface layer**
-- **Modern Python implementation** using current libraries and language features
-
+- Built using **modern Python development** practices, including comprehensive testing, mocking, type checking, and automated quality checks.
 
 :::
-
 ::::
+
+::: {.footer}
+[HTTomo documentation](https://diamondlightsource.github.io/httomo/)
+:::
 
 ## Installation of HTTomo and its dependencies 
 
 
-![](images/httomo_installation.png){.nostretch fig-align="center" width="30%"}
+![](images/httomo_installation.png){.nostretch fig-align="center" width="50%"}
 
-## Choose your installation path
+::: {.footer}
+[HTTomo installation](https://diamondlightsource.github.io/httomo/howto/installation.html)
+:::
+
+## Choose your installation
 
 :::: {.columns}
 
 ::: {.column width="33%"}
-### Linux + NVIDIA GPU
+### [Linux + NVIDIA GPU](#linux_install)
 
 **Full HTTomo installation**
 
@@ -90,7 +107,7 @@ By the end of this session, you will be able to:
 :::
 
 ::: {.column width="33%"}
-### Windows 10/11
+### [Windows 10/11](#windows_install)
 
 **Run inside WSL**
 
@@ -100,7 +117,7 @@ By the end of this session, you will be able to:
 :::
 
 ::: {.column width="33%"}
-### Apple Silicon
+### [Apple Silicon](#apple_install)
 
 **CPU-only installation**
 
@@ -111,51 +128,53 @@ By the end of this session, you will be able to:
 
 ::::
 
-::: {.callout-note}
-[Complete installation guide](https://diamondlightsource.github.io/httomo/howto/installation.html)
+::: {.footer}
+[HTTomo installation](https://diamondlightsource.github.io/httomo/howto/installation.html)
 :::
 
-## Linux: create HTTomo conda environment {#linux_install .small}
 
-```bash
+## Linux: create HTTomo conda environment {#linux_install .smaller}
+
+```{.bash}
 conda create --name httomo
 conda activate httomo
 ```
 
-Install the compiled dependencies from conda-forge:
+Install the dependencies from conda-forge:
 
-```bash
-conda install -c conda-forge \
-  cupy==14.2 openmpi==4.1.6 'h5py[build=*openmpi*]' \
-  python numpy astra-toolbox aiofiles click graypy loguru nvtx \
-  pillow pyyaml scikit-image scipy tqdm hdf5plugin pip pywavelets
+```{.bash}
+conda install -c conda-forge cupy==14.2 openmpi==4.1.6 h5py[build=*openmpi*] \
+python numpy astra-toolbox aiofiles click graypy loguru nvtx \
+pillow pyyaml scikit-image scipy tqdm hdf5plugin pip pywavelets
 ```
 
 Install TomoPy for CPU processing:
 
-```bash
+```{.bash code-line-numbers="false"}
 conda install -c conda-forge tomopy==1.15.3
 ```
 
-Install HTTomo and its processing libraries:
+Install HTTomo and libraries:
 
-```bash
-pip install httomo httomo-backends httomolib \
-  httomolibgpu tomobar --no-deps
+```{.bash code-line-numbers="false"}
+pip install httomo httomo-backends httomolib httomolibgpu tomobar --no-deps
 ```
 
 Then verify the command-line interface:
 
-```bash
+```{.bash code-line-numbers="false"}
 python -m httomo --help
 ```
 
-::: {.callout-tip}
-If you don't have a GPU device it is still OK to install `cupy` and `httomolibgpu` library, however, you'd need to use CPU methods from `tomopy` and `httomolib` libraries.
+::: {.callout-note}
+You can install `CuPy` and `httomolibgpu` without a GPU. However, to process data on the CPU, use methods from `TomoPy` and `httomolib`.
 :::
 
+::: {.footer}
+[HTTomo Linux installation](https://diamondlightsource.github.io/httomo/howto/installation.html)
+:::
 
-## Windows: install through WSL
+## Windows: install through WSL {#windows_install}
 
 HTTomo libraries can be installed natively, but the **HTTomo framework requires Linux**.
 
@@ -172,14 +191,18 @@ HTTomo libraries can be installed natively, but the **HTTomo framework requires 
    wsl
    ```
 
-4. Inside WSL, install the **Linux Miniforge** distribution.
+4. Inside WSL, install the [Linux Miniforge](https://conda-forge.org/download/) distribution.
 5. Follow the [Linux/conda](#linux_install) installation.
 
 ::: {.callout-note}
 WSL supports compatible NVIDIA CUDA GPUs. If `httomolib` needs a compiler, run `sudo apt-get install gcc` inside WSL.
 :::
 
-## macOS Apple Silicon: CPU-only {.small}
+::: {.footer}
+[Windows installation](hhttps://diamondlightsource.github.io/httomo/howto/installation_variants/installation_windows.html)
+:::
+
+## macOS Apple Silicon: CPU-only {#apple_install .small}
 
 Install native `arm64` Miniforge—not the Intel/Rosetta build:
 
@@ -205,6 +228,10 @@ pip install httomo httomo-backends httomolib tomobar --no-deps
 
 ::: {.callout-warning}
 Do not install CuPy or `httomolibgpu`: Apple Silicon does not support NVIDIA CUDA. Pipelines must use CPU/TomoPy methods.
+:::
+
+::: {.footer}
+[macOS installation](https://diamondlightsource.github.io/httomo/howto/installation_variants/installation_mac.html)
 :::
 
 ## Verify the installation
@@ -255,53 +282,108 @@ pytest tests/ --cupy
 ::: {.callout-note}
 The small-data pipeline tests are available with `pytest tests/ --small_data` after downloading the example pipelines described in the [testing guide](https://diamondlightsource.github.io/httomo/howto/running_tests.html).
 :::
+::: {.footer}
+[Running tests](https://diamondlightsource.github.io/httomo/howto/running_tests.html)
+:::
+
 
 ## Installation complete
 
 You should now have:
 
-- an isolated `httomo` conda environment;
-- MPI and parallel HDF5 support;
-- GPU processing on Linux/WSL, where CUDA is available;
-- CPU/TomoPy processing on Apple Silicon;
-- a working `python -m httomo` command.
+- an isolated `httomo` conda environment
+- MPI and parallel HDF5 support installed
+- CPU/TomoPy processing (all OS)
+- if GPU device is available, GPU processing on Linux/WSL
+- a working `python -m httomo` command
+
 
 
 ## HTTomo framework (main concepts)
 
-## {#mpi_figure}
+![](images/cool_httomo_framework_autogen.png){.nostretch fig-align="center" width="70%"}
 
-![](images/mpi_chunks_reslice_oriented.svg){
-  width=100%
-  fig-alt="HTTomo inner workings: MPI chunks, reslice and oriented projections"
-}
+
+##  What is Open MPI?
+
+Open MPI is an open-source implementation of the **Message Passing Interface** standard. It launches independent processes—called **MPI ranks**—and lets them exchange data and coordinate work.
+
+- The same program runs in every rank
+- Each rank processes a different part of the dataset
+- Ranks can run on one workstation or across several HPC nodes
+
+### Why is it useful to HTTomo?
+
+HTTomo uses MPI as its **high-level parallelisation layer**:
+
+::: {.mpi-flow}
+::: {.rank}
+**Rank 0**
+GPU 0
+:::
+::: {.rank}
+**Rank 1**
+GPU 1
+:::
+::: {.rank}
+**Rank 2**
+GPU 2
+:::
+::: {.rank}
+**Rank 3**
+GPU 3
+:::
+:::
+
+- Splits large tomography data into blocks among workers
+- Assigns ranks to CPUs or GPUs for concurrent processing
+- Coordinates distributed I/O, processing and reconstruction
 
 ::: {.footer}
-[Benefits of using Open MPI in HTTomo](#openmpi-benefits )
+[Benefits of using Open MPI in HTTomo](#openmpi-benefits)
+:::
+
+
+## {#mpi_figure}
+
+<object data="images/mpi_chunks_reslice_oriented.svg"
+        type="image/svg+xml"
+        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
+</object>
+
+::: {.footer}
+[Benefits of using Open MPI in HTTomo](#openmpi-benefits)
+:::
+
+
+## {#reslice}
+
+<object data="images/httomo_reslicing_dark.svg"
+        type="image/svg+xml"
+        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
+</object>
+
+::: {.footer}
+[More on reslice](https://diamondlightsource.github.io/httomo/introduction/indepth/reslice.html)
+:::
+
+## {#sections}
+
+<object data="images/httomo_gpu_section.svg"
+        type="image/svg+xml"
+        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
+</object>
+
+::: {.footer}
+[More on sections](https://diamondlightsource.github.io/httomo/introduction/indepth/sections.html)
 :::
 
 ## 
 
-![](images/httomo_reslicing_dark.svg){
-  width=100%
-  fig-alt="HTTomo reslicing"
-}
-
-
-## 
-
-![](images/gpu_memory_estimation_vector.svg){
-  width=100%
-  fig-alt="GPU memory estimation for HTTomo"
-}
-
-
-## 
-
-![](images/httomo_gpu_section.svg){
-  width=100%
-  fig-alt="HTTomo sections"
-}
+<object data="images/gpu_memory_estimation_vector.svg"
+        type="image/svg+xml"
+        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
+</object>
 
 
 ## 
@@ -325,82 +407,54 @@ You should now have:
 
 ## 
 
-![](images/httomo_features.svg){
-  width=100%
-  fig-alt="HTTomo features"
-}
+<object data="images/httomo_features.svg"
+        type="image/svg+xml"
+        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
+</object>
+
+::: {.footer}
+[HTTomo features](https://diamondlightsource.github.io/httomo/howto/httomo_features.html)
+:::
 
 ## Loaders and preprocessors
 
 1. Prepeare tomography datasets: synthetic and real data
-2. Create a YAML pipeline with the loader and preprocessor methods
+2. Create a YAML pipeline with the loader and pre-processing methods
 3. Modify the preview 
 3. Run HTTomo
 4. Inspect the correction results
 
-## NXtomo data generation with TomoPhantom {.smaller}
+## [NXtomo](https://manual.nexusformat.org/classes/applications/NXtomo.html) data generation with TomoPhantom {.small}
 
-::: {.columns}
-::: {.column width="48%"}
-### 1. Install TomoPhantom
 
-Install into your HTTomo conda environemnt:
+1. Install [tomophantom](https://github.com/dkazanc/tomophantom) into your existing HTTomo conda environemnt:
 
 ```bash
-conda install -c httomo -c conda-forge \
-  tomophantom==3.1.5 h5py psutil scikit-image
+conda install -c httomo -c conda-forge tomophantom==3.1.5 psutil scikit-image
 ```
 
-Save bellow as**`artefacts.json`** in your working directory (e.g., `synthdata`):
-```json
-{
-  "zingers_percentage": 0.05,
-  "zingers_modulus": 10,
-  "stripes_percentage": 3.0,
-  "stripes_maxthickness": 3,
-  "stripes_intensity": 0.05,
-  "stripes_type": "full",
-  "stripes_variability": 0.002,
-  "verbose": true
-}
-```
-Save bellow as **`flat_settings.json`** :
-```json
-{
-  "detectors_miscallibration": 0.05,
-  "variations_number": 3,
-  "arguments_Bessel": [1, 25],
-  "specklesize": 2,
-  "kbar": 2,
-  "sigmasmooth": 3,
-  "jitter_projections": 0.0
-}
-```
-
+::: {.fragment}
+2. Save [artefacts.json](https://github.com/dkazanc/httomo-nobugs26/tree/main/tomophantom/artefacts.json) and [flat_settings.json](https://github.com/dkazanc/httomo-nobugs26/tree/main/tomophantom/flat_settings.json) files into a directory (e.g., `synthdata`):
 :::
 
-::: {.column width="52%"}
-### 2. Generate synthethic data
+::: {.fragment}
+
+3. Generate NXTomo compliant synthethic data. 
 
 From the command line and from the `synthdata` folder run the following command:
 
 ```bash
-python -m tomophantom.scripts.nxs_generator \ 
-  --realistic -m 18 -s 256 512 740 \ 
-  --flats 20 --darks 10 --source-intensity 20000 \
-  --artefacts artefacts.json \
-  --flat-settings flat_settings.json \ 
-  --seed 1 -o tomodata_synth.nxs
+python -m tomophantom.scripts.nxs_generator --realistic -m 18 -s 256 512 740 \ 
+  --flats 20 --darks 10 --source-intensity 20000 --artefacts artefacts.json \
+  --flat-settings flat_settings.json --seed 1 -o tomodata_synth.nxs
 ```
 
-**Output:** `tomodata_synth.nxs` in your working directory, containing darks, flats and projections.
-
-Use [myhdf5](https://myhdf5.hdfgroup.org/) online viewer to inspect the generated NeXus/HDF5 file.
-
 ::: {.callout-note}
-One can also generate a smaller dataset if needed by changing the shape parameter in the command above, e.g., `-s 128 256 362`.
+One can also generate a smaller dataset if needed by changing the shape parameter in the command above, e.g., `-s 128 256 362`. It is also possible to change a model, e.g., a data of 3D Shepp-Logan phantom can be generated with `-s 13`.
 :::
 
+:::{.result}
+The `tomodata_synth.nxs` file is generated containing darks, flats and projections.
 :::
 :::
 
@@ -409,11 +463,68 @@ One can also generate a smaller dataset if needed by changing the shape paramete
 [Generator script](https://github.com/dkazanc/TomoPhantom/blob/master/tomophantom/scripts/nxs_generator.py)
 :::
 
+## Visualising HDF5 and NeXus files
+
+Browse the file hierarchy, inspect metadata, then plot a dataset.
+
+:::: {.columns}
+::: {.column width="48%"}
+### [myHDF5](https://myhdf5.hdfgroup.org/)
+
+**Quick exploration in your browser**
+
+- Open local HDF5 files without installation.
+- Explore groups and datasets, and visualise arrays.
+- Local files stay on your computer.
+:::
+
+::: {.column width="48%"}
+### [DAWN](https://dawnsci.org/)
+
+**Desktop visualisation and analysis**
+
+- Browse HDF5 and NeXus data.
+- Fast data visualisation in 1D, 2D and 3D.
+- Use scientific processing workflows.
+:::
+::::
+
+### Other useful choices
+
+::: {.smaller}
+- [HDFView](https://www.hdfgroup.org/download-hdfview/): inspect and edit HDF5 structure, attributes and data.
+- [silx view](https://www.silx.org/doc/silx/latest/applications/view.html): browse HDF5 and plot NeXus `NXdata` groups.
+- [NeXpy](https://nexpy.github.io/nexpy/): explore and analyse NeXus data with a Python GUI.
+:::
+
+::: {.notes}
+NeXus uses HDF5 with conventions for organising scientific data. An NXdata group describes a signal and its axes, helping compatible viewers produce meaningful plots.
+
+Suggested demonstration: open a file, inspect groups and attributes, select a dataset, and display a line plot or image. For NeXus, locate an NXdata group and check the signal, axes and units.
+
+Sources:
+- https://myhdf5.hdfgroup.org/
+- https://dawnsci.org/
+- https://www.hdfgroup.org/download-hdfview/
+- https://manual.nexusformat.org/examples/view/index.html
+- https://manual.nexusformat.org/introduction.html
+:::
+
+## Visualise the generated data
+
+A sinogram view of `tomodata_synth.nxs` using [DAWN](https://dawnsci.org/)
+
+![](images/dawn_view.png){
+  width=100%
+  fig-alt="Dawn synthethic"
+}
+
+
 ## HTTomo loader and data previewing {.smaller}
 
 ::: {.columns}
 ::: {.column width="49%"}
-###  YAML for HTTomo loader
+###  YAML for the HDF5/nxs loader
 
 ```yaml
 - method: standard_tomo
@@ -432,14 +543,13 @@ One can also generate a smaller dataset if needed by changing the shape paramete
     darks: null
     flats: null
 ```
-::: {.callout-note}
-See [HTTomo loader](https://diamondlightsource.github.io/httomo/reference/loaders.html) documentation for more details.
-:::
-
 
 :::
 
 ::: {.column width="51%"}
+
+::: {.fragment}
+
 ### Previewing
 
 [Data previewing](https://diamondlightsource.github.io/httomo/howto/httomo_features/previewing.html) **crops data during loading** to reduce processing time and/or test parameters.
@@ -456,7 +566,9 @@ Examples:
       start: 50
       stop: 100
 ```
+:::
 
+::: {.fragment}
 or use `mid` keyword to select the middle part:
 
 ```yaml
@@ -467,13 +579,16 @@ or use `mid` keyword to select the middle part:
       stop: mid
       stop_offset : 10
 ```
-
+:::
+:::
 :::
 
+::: {.footer}
+[HTTomo loader details](https://diamondlightsource.github.io/httomo/reference/loaders.html) and [previewing](https://diamondlightsource.github.io/httomo/howto/httomo_features/previewing.html)
 :::
 
 
-## Building HTTomo pipeline with YAML templates {.smaller}
+## Building HTTomo pipeline with YAML templates {.small}
 
 ::: {.columns}
 ::: {.column width="49%"}
@@ -487,12 +602,19 @@ or use `mid` keyword to select the middle part:
 Use the editors that support YAML syntax highlighting, e.g., vscodium, VSCode, Atom, PyCharm and others.
 :::
 
-4. Edit parameters, replace any `REQUIRED` values, and run [YAML checker](https://diamondlightsource.github.io/httomo/utilities/yaml_checker.html) before processing to validate the resulting YAMl.
+4. Edit parameters, replace any `REQUIRED` values, and run [YAML checker](https://diamondlightsource.github.io/httomo/utilities/yaml_checker.html) before processing to validate the resulting YAML.
 
 :::
 
 ::: {.column width="51%"}
-### Example: adding preprocessing
+
+::: {.fragment}
+
+### Example: adding GPU pre-processing methods
+
+::: {.callout-warning}
+The methods from the [HTTomolibgpu](https://github.com/DiamondLightSource/httomolibgpu) library use the GPU backend.
+:::
 
 From [HTTomolibgpu normalization templates](https://diamondlightsource.github.io/httomo-backends/api/httomolibgpu.prep.normalize.html), paste these blocks **after your loader**:
 
@@ -511,37 +633,21 @@ From [HTTomolibgpu normalization templates](https://diamondlightsource.github.io
   parameters: {}
 ```
 
-::: {.callout-warning}
-The methods from the [HTTomolibgpu](https://github.com/DiamondLightSource/httomolibgpu) library use the GPU backend.
 :::
-
 :::
 :::
 
-## Exercise 1: pre-processing (d/f correction) {.smaller}
+## Exercise 1: pre-processing (d/f correction) {.small}
 
 ::: {.columns}
 ::: {.column width="49%"}
-### Your task ~ 7 minutes
+### Your task ~ 10 minutes
 
-Use the generated **synthetic transmission data** `tomodata_synth.nxs`, to correct for flats and darks.
 
-1. Save your loader configuration as `pipeline_synth.yaml`. Select a small vertical preview (e.g., 10 rows/slices).
-2. Copy **normalize**, then **minus_log** from the [TomoPy YAML templates](https://diamondlightsource.github.io/httomo-backends/api/tomopy.prep.normalize.html) below the loader.
-3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) the result of **minus_log** into the HDF5 file.
-4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
-```bash
-python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
-```
-5. Run the pipeline with:
-```bash
-python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
-```
-6. Inspect the results with [myhdf5](https://myhdf5.hdfgroup.org/) or any HDF5 viewer.
-:::
+Use the generated **synthetic transmission data** to correct for flats and darks and take negative log.
 
-::: {.column width="51%"}
-### What are these operations?
+
+::: {.fragment}
 
 **1. Dark/flat correction** estimates transmission:
 
@@ -550,28 +656,24 @@ $$T = \frac{I-D}{F-D}$$
 $I$: sample image. $D$: mean dark, beam off. $F$: mean flat, beam on without the sample.
 
 Subtracting $D$ removes detector offset. Dividing by $F-D$ corrects illumination and pixel-response variations.
+:::
+::: {.fragment}
 
 **2. Negative log** gives an attenuation projection:
 
 $$p=-\ln T \approx \int_{\mathrm{ray}}\mu(s)\,ds$$
 
 The Beer–Lambert model converts transmission into the line integrals used in reconstruction.
-
 :::
 :::
+::: {.column width="51%"}
+::: {.fragment}
 
+### Task steps:
 
-## Exercise 2: pre-processing (dezingering) {.smaller}
-
-::: {.columns}
-::: {.column width="49%"}
-### Your task ~ 5 minutes
-
-Use `tomodata_synth.nxs` to remove zingers (outliers) from the projections.
-
-1. Use `pipeline_synth.yaml` from Exercise 1 to add **zinger removal** method using the TomoPy's [remove_outlier3d](https://tomopy.readthedocs.io/en/stable/_modules/tomopy/misc/corr.html#remove_outlier3d). 
-2. Add the appropriate [TomoPy YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.misc.corr.html) right after the loader and before any other method.
-3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) the result of **remove_outlier3d** into the HDF5 file.
+1. Save your loader configuration as `pipeline_synth.yaml`. Select a small vertical preview (e.g., 10 rows/slices).
+2. Copy **normalize**, then **minus_log** from the [TomoPy YAML templates](https://diamondlightsource.github.io/httomo-backends/api/tomopy.prep.normalize.html) below the loader.
+3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) into the HDF5 file the result of **minus_log**.
 4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
 ```bash
 python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
@@ -580,11 +682,21 @@ python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```bash
 python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
 ```
-6. Inspect the results with [myhdf5](https://myhdf5.hdfgroup.org/) or any HDF5 viewer. As to compare data before and after filtering.
+6. Inspect the results with [DAWN](https://dawnsci.org/) or [myhdf5](https://myhdf5.hdfgroup.org/), or any HDF5 viewer.
+:::
+:::
 :::
 
-::: {.column width="51%"}
-### What is this operation?
+
+## Exercise 2: pre-processing (dezingering) {.small}
+
+::: {.columns}
+::: {.column width="49%"}
+### Your task ~ 5 minutes
+
+Remove zingers (outliers) from the projections.
+
+::: {.fragment}
 
 A **zinger** is a spurious, isolated intensity spike or small cluster of pixels. A **dezinger** method detects and replaces these outliers.
 
@@ -594,11 +706,29 @@ A **zinger** is a spurious, isolated intensity spike or small cluster of pixels.
 
 Uses a **local 3D median** to selectively replace outliers, retaining other values.
 
-- **`size: 3`** uses a 3 × 3 × 3 neighbourhood across the projection stack.
-- **`dif`** controls the difference threshold in the input data's intensity units.
+- **`size: 3`** is a 3 × 3 × 3 neighbourhood.
+- **`dif`** difference value between outlier value and the median value of the neighbourhood. If zero, equivalent to a median filter.
 
-::: {.smaller}
-A threshold that is too low can remove real detail (equivalent to running a median filter). 
+::: 
+:::
+
+::: {.column width="51%"}
+::: {.fragment}
+
+### Task steps:
+
+1. Use `pipeline_synth.yaml` from Exercise 1 to add **zinger removal** method using the TomoPy's [remove_outlier3d](https://tomopy.readthedocs.io/en/stable/_modules/tomopy/misc/corr.html#remove_outlier3d). 
+2. Add the appropriate [TomoPy YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.misc.corr.html) right after the loader and before any other method.
+3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) into the HDF5 file the result of **remove_outlier3d**.
+4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
+```bash
+python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
+```
+5. Run the pipeline with:
+```bash
+python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
+```
+6. Inspect the results (compare data before and after filtering).
 :::
 :::
 :::
@@ -900,7 +1030,7 @@ We also need to specify the rotation angles as the dataset doesn't contain them.
 :::
 
 
-## Centre of Rotation (CoR) estimation {.smaller}
+## Centre of Rotation (CoR) estimation {#cor_estimation .smaller}
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -945,7 +1075,6 @@ In HTTomo, the CoR can be estimated by using:
 ::: {style="font-size: 0.5em;"}
 Synthetic demonstration inspired by [Vo et al., Optics Express 22, 19078–19086 (2014)](https://doi.org/10.1364/OE.22.019078). In TomoPy: [`find_center_vo`](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.rotation.html#tomopy.recon.rotation.find_center_vo).
 :::
-
 
 ## Side outputs {#side-outputs .smaller}
 
@@ -1007,15 +1136,16 @@ Example: [HTTomo auto-centering](https://diamondlightsource.github.io/httomo/how
 ::::
 
 
-## Exercise 5: reconstruction with auto-centering {.small}
+## Exercise 5: reconstruction with auto-centering {#excercise5 .small}
 
 ### Your task ~ 7 minutes
 
 Use real data `tomo_00088.h5` to perform d/f correction, auto-centering and reconstruction.
 
-1. Use `pipeline_tomo88.yaml` with the specific [loader](#real_data). 
-2. Add the [`find_center_vo`](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.rotation.html#tomopy.recon.rotation.find_center_vo) method by using the [YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.recon.rotation.html) for it.
-3. Add the `gridrec` reconstruction method using provided [YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.recon.algorithm.html).
+1. Use `pipeline_tomo88.yaml` with the specific [loader](#real_data).
+2. Add d/f correction and negative logarithm. 
+3. Add the [`find_center_vo`](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.rotation.html#tomopy.recon.rotation.find_center_vo) method by using the [YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.recon.rotation.html) for it.
+4. Add the `gridrec` reconstruction method using provided [YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.recon.algorithm.html).
 
 ::: {.callout-note}
 Note that `center` in `parameters` points to the side output of the `find_center_vo` method by default.
@@ -1027,14 +1157,13 @@ Note that `center` in `parameters` points to the side output of the `find_center
 ```
 :::
 
-4. Validate the YAML file and run the pipeline.
+5. Validate the YAML file and run the pipeline.
 
-## Why use Open MPI in HTTomo? {#openmpi-benefits .smaller}
+## Why use Open MPI in HTTomo? {#openmpi-benefits .small}
 
 **Open MPI** is an open-source implementation of the **Message Passing Interface (MPI)**. It launches cooperating processes, called **ranks**, and lets them exchange data on one computer or across cluster nodes.
 
-
-### Benefits for tomography
+Parallel-beam tomography offers substantial **data parallelism** as operations can run independently on different projections or sinograms.
 
 | Benefit | How HTTomo uses it |
 |:--|:--|
@@ -1043,70 +1172,728 @@ Note that `center` in `parameters` points to the side output of the `find_center
 | **Data exchange** | MPI enables redistribution between projection and sinogram processing patterns. |
 | **Flexible deployment** | Run a pipeline on a workstation or on allocated cluster resources. |
 
-Parallel-beam tomography offers substantial **data parallelism** as operations can run independently on different projections or sinograms.
 
 ::: {.footer}
 [Data distribution in HTTomo figure](#mpi_figure)
 :::
 
 
+## Exercise 6: running pipelines in parallel {#excercise6 .small}
 
-## Sweeping functionality {#sweeping .smaller}
+### Your task ~ 5 minutes
 
-## Parallel processing in HTTomo with MPI {.smaller}
+Re-run the pipeline from the [Excercise 5](#excercise5) but in parallel. 
 
-::: {.columns}
+Start with 2 ranks run using the following command: 
+
+```bash
+mpirun -n 2 python -m httomo run tomo_00088.h5 pipeline_tomo88.yaml output
+```
+
+Where `-n`: stands for the number of processes, or **ranks**.
+
+You can monitor your CPU usage panel when executing the job. The time of the parallel execution should be smaller compared to the `-n 1` baseline for 1 process.
+
+**You can continue using parallel execution for the rest of the session.**
+
+::: {.fragment}
+::: {.callout-note}
+For the GPU runs, the number of processes is linked to the number of GPU cards available. 
+:::
+:::
+
+## Exercise 7: saving images {#excercise7 .small}
+
+### Your task ~ 5 minutes
+
+Run the pipeline from the [Excercise 6](#excercise6) (parallel run) and add data rescaling and image saving. 
+
+After the reconstruction step add the following YAML code: 
+
+<details>
+<summary>Stats, rescale and 16-bit tiffs saving</summary>
+
+
+```yaml
+- method: calculate_stats
+  module_path: httomo.methods
+  parameters: {}
+  id: statistics
+  side_outputs:
+    glob_stats: glob_stats
+- method: rescale_to_int
+  module_path: httomolib.misc.rescale
+  parameters:
+    perc_range_min: 1.0
+    perc_range_max: 99.0
+    bits: 16
+    glob_stats: ${{statistics.side_outputs.glob_stats}}
+- method: save_to_images
+  module_path: httomolib.misc.images
+  parameters:
+    subfolder_name: images
+    axis: auto
+    file_format: tif
+    asynchronous: true
+```
+</details>
+
+
+For the [real dataset](#real_data) from TomoBank the full CPU pipeline is the following:
+
+<details>
+<summary>Full CPU YAML pipeline</summary>
+
+
+```yaml
+- method: standard_tomo
+  module_path: httomo.data.hdf.loaders
+  parameters:
+    data_path: /exchange/data
+    image_key_path: null
+    rotation_angles:
+      user_defined:
+        start_angle: 0
+        stop_angle: 179.876
+        angles_total: 1500
+    preview:
+      detector_y:
+        start: 500
+        stop: 510
+    darks:
+      file: input_data
+      image_key_path: null
+      data_path: /exchange/data_dark
+    flats:
+      file: input_data
+      image_key_path: null
+      data_path: /exchange/data_white
+    continuous_scan_subset: null
+- method: normalize
+  module_path: tomopy.prep.normalize
+  parameters:
+    cutoff: null
+    averaging: mean
+- method: find_center_vo
+  module_path: tomopy.recon.rotation
+  parameters:
+    ind: mid
+    smin: -50
+    smax: 50
+    srad: 6
+    step: 0.25
+    ratio: 0.5
+    drop: 20
+  id: centering
+  side_outputs:
+    cor: centre_of_rotation
+- method: remove_all_stripe
+  module_path: tomopy.prep.stripe
+  parameters:
+    snr: 3
+    la_size: 61
+    sm_size: 21
+    dim: 1
+- method: minus_log
+  module_path: tomopy.prep.normalize
+  parameters: {}
+- method: recon
+  module_path: tomopy.recon.algorithm
+  parameters:
+    center: ${{centering.side_outputs.centre_of_rotation}}
+    sinogram_order: false
+    algorithm: gridrec
+    init_recon: null
+- method: calculate_stats
+  module_path: httomo.methods
+  parameters: {}
+  id: statistics
+  side_outputs:
+    glob_stats: glob_stats
+- method: rescale_to_int
+  module_path: httomolib.misc.rescale
+  parameters:
+    perc_range_min: 1.0
+    perc_range_max: 99.0
+    bits: 16
+    glob_stats: ${{statistics.side_outputs.glob_stats}}
+- method: save_to_images
+  module_path: httomolib.misc.images
+  parameters:
+    subfolder_name: images
+    axis: auto
+    file_format: tif
+    asynchronous: true
+```
+</details>
+
+
+::: {.fragment}
+
+The corresponding GPU pipeline is the following: 
+
+<details>
+<summary>Full GPU YAML pipeline</summary>
+
+
+```yaml
+- method: standard_tomo
+  module_path: httomo.data.hdf.loaders
+  parameters:
+    data_path: /exchange/data
+    image_key_path: null
+    rotation_angles:
+      user_defined:
+        start_angle: 0
+        stop_angle: 179.876
+        angles_total: 1500
+    preview:
+      detector_y:
+        start: 500
+        stop: 510
+    darks:
+      file: input_data
+      image_key_path: null
+      data_path: /exchange/data_dark
+    flats:
+      file: input_data
+      image_key_path: null
+      data_path: /exchange/data_white
+    continuous_scan_subset: null
+- method: dark_flat_field_correction
+  module_path: httomolibgpu.prep.normalize
+  parameters:
+    flats_multiplier: 1.0
+    darks_multiplier: 1.0
+    upper_bound: null
+    lower_bound: null
+    clipping_warning: false
+- method: find_center_vo
+  module_path: httomolibgpu.recon.rotation
+  parameters:
+    ind: mid
+    average_radius: 0
+    cor_initialisation_value: null
+    smin: -50
+    smax: 50
+    srad: 6.0
+    step: 0.5
+    ratio: 0.5
+    drop: 20
+  id: centering
+  side_outputs:
+    cor: centre_of_rotation
+- method: remove_all_stripe
+  module_path: httomolibgpu.prep.stripe
+  parameters:
+    snr: 3.0
+    la_size: 61
+    sm_size: 21
+    dim: 1
+    normalize: false
+- method: minus_log
+  module_path: httomolibgpu.prep.normalize
+  parameters: {}
+- method: FBP3d_tomobar
+  module_path: httomolibgpu.recon.algorithm
+  parameters:
+    center: ${{centering.side_outputs.centre_of_rotation}}
+    detector_pad: false
+    filter_freq_cutoff: 0.35
+    recon_size: null
+    recon_mask_radius: 0.95
+- method: calculate_stats
+  module_path: httomo.methods
+  parameters: {}
+  id: statistics
+  side_outputs:
+    glob_stats: glob_stats
+- method: rescale_to_int
+  module_path: httomolib.misc.rescale
+  parameters:
+    perc_range_min: 1.0
+    perc_range_max: 99.0
+    bits: 16
+    glob_stats: ${{statistics.side_outputs.glob_stats}}
+- method: save_to_images
+  module_path: httomolib.misc.images
+  parameters:
+    subfolder_name: images
+    axis: auto
+    file_format: tif
+    asynchronous: true
+```
+</details>
+:::
+
+::: {.footer}
+[Real data example in HTTomo documentation](https://diamondlightsource.github.io/httomo/howto/how_to_run/real_data_example.html)
+:::
+
+## Interpreting HTTomo logs
+
+[Section](#sections) **progress counts data blocks, rather than methods or the whole pipeline.**
+
+:::: {.columns}
+::: {.column width="33%"}
+
+### Log outputs
+
+| Output | What it tells you |
+|:--|:--|
+| **Terminal (stdout)** | Concise run status and progress |
+| **`user.log`** | The same concise information, saved to file |
+| **`debug.log`** | More detailed information for debugging |
+
+
+
+:::
+::: {.column width="67%"}
+
+### Reading the sections
+
+1. **`Pipeline has been separated into N sections`**   HTTomo groups methods into sections that process data blocks.
+2. **Loader runs first, outside the sections.**   It loads data in projection pattern, which the first section also uses.
+3. **`Section N with the following methods`**   The listed methods run sequentially on each block. The section processes all its input before the next section starts.
+4. **`Finished processing the last block`**   The current section has finished. Another section may follow.
+
+::: {.reading}
+**Example:** `1/2` means one of two blocks completed in this section (**50%**). Elapsed/remaining times and `s/block` describe section progress. Faster processing may use `block/s`.
+:::
+
+:::
+::::
+
+::: {.footer}
+[Interpret logs in HTTomo](https://diamondlightsource.github.io/httomo/howto/interpret_logger.html)
+:::
+
+
+## Sweeping functionality {#sweeping .small}
+
+:::: {.columns}
+::: {.column width="54%"}
+
+### What is it
+
+[HTTomo parameter sweeping](https://diamondlightsource.github.io/httomo/howto/httomo_features/parameter_sweeping.html) runs a method on the same input data using several values of one parameter, allowing you to compare the results and choose a suitable value.
+
+### When to use
+
+Parameter sweeping is useful when automatic estimation fails or is unavailable. For example, if an automatic method cannot reliably estimate the [center of rotation](#cor_estimation), sweeping lets you compare reconstructions and select a suitable value.
+
+### HTTomo feature
+
+Parameter sweeping uses a separate runner in HTTomo, designed for debugging and parameter tuning rather than high-throughput processing.
+
+:::
+::: {.column width="45%"}
+
+::: {.fragment}
+
+![](images/sweep_cor.gif){
+  width=85%
+  fig-alt="CoR sweeping"
+}
+
+::: {.caption}
+Changing CoR changes the reconstruction. Each frame shows its trial value.
+:::
+
+:::
+
+:::
+::::
+
+
+## HTTomo parameter sweeping {#sweep_syntax}
+
+Run a method with several values of **one** parameter.
+
+:::: {.columns}
+::: {.column width="48%"}
+
+### YAML syntax
+
+**Range of values** (under `parameters:`) for the `center` parameter:
+
+```yaml
+center: !SweepRange
+  start: 10
+  stop: 50
+  step: 10
+```
+
+Tests **10, 20, 30, 40**.
+
+**Explicit values** given for the `size` parameter:
+
+```yaml
+size: !Sweep
+  - 3
+  - 5
+```
+
+:::
+::: {.column width="52%"}
+
+### Setup and results
+
+- Define **one sweep per pipeline**.
+- Use loader `preview` to select few vertical slices.
+- HTTomo saves sweep results as images **automatically**. No image-saving method is needed after the sweep.
+- Each trial contributes its **middle slice** to the output, stacked along the middle dimension.
+
+:::
+::::
+
+::: {.footer}
+[HTTomo parameter sweeping guide](https://diamondlightsource.github.io/httomo/howto/httomo_features/parameter_sweeping.html)
+:::
+
+## Exercise 8: sweeping for CoR {#excercise8 .small}
+
+### Your task ~ 10 minutes
+
+Perform a **sweep** run for the [center of rotation](#cor_estimation) using the YAML syntax provided in the [previous slide](#sweep_syntax). 
+
+::: {.callout-note}
+You need to remove all auto-centering methods from the pipeline as well as the tiff saving.
+The run command itself doesn't change and remain the same as before. 
+:::
+
+## More advanced concepts
+
+- HTTomo and large data processing
+- GPU processing, memory management and padding
+- Enabling new methods in HTTomo
+- HTTomo for HPC environment
+
+## Large datasets on workstations with limited RAM
+
+Set a realistic **RAM budget per process** with `--max-memory` flag, so HTTomo can manage the larger data.
+
+:::: {.columns}
+::: {.column width="50%"}
+
+### How HTTomo handles the large data
+
+- Memory **peaks** at [reslice](#reslice) operation
+- **Enough RAM:** retain intermediate data in memory for speed (i.e., `in-memory` reslice).
+- **Memory requirements exceed RAM:** automatically store intermediate data on disk and reload it as needed (i.e., `in-disk` reslice). 
+
+::: {.fragment}
+
+### Practical choices
+- Start with **one process** and an accurate memory budget.
+- Allow disk space for intermediate data and final results. Disk transfers add processing time.
+- For `in-disk` re-slicing, use `--reslice-dir` to place temporary file on a faster file-system, e.g., NVMe SSD.
+:::
+:::
 ::: {.column width="49%"}
-### Running the same pipeline in parallel
 
-Activate your HTTomo environment, then launch **four MPI processes**:
-
+::: {.fragment}
+### Example: one process, 24 GB budget
 ```bash
-mpirun -np 4 python -m httomo run \
-  phantom.nxs pipeline.yaml output_mpi4/
+httomo run \
+  --max-memory 24G \
+  data.nxs pipeline.yaml output/
 ```
+**Illustrative 32 GB workstation:** allocate 24 GB to HTTomo and leave 8 GB for the operating system and other applications. Adjust to actual available RAM.
 
-- `-np 4`: four cooperating processes, or **ranks**.
-- `phantom.nxs`: input data.
-- `pipeline.yaml`: your existing method sequence.
-- `output_mpi4/`: output directory.
-
-**One-process baseline:**
-
-```bash
-mpirun -np 1 python -m httomo run \
-  phantom.nxs pipeline.yaml output_mpi1/
-```
-
-::: {.smaller}
-MPI can run on one machine or allocated cluster nodes. Use the MPI launcher compatible with your HTTomo environment.
-:::
+For **P processes on one workstation**, divide the total HTTomo RAM budget by P.
 :::
 
+::: {.fragment}
+
+::: {.callout-warning}
+Even when the input data occupies only half the available RAM, intermediate data can grow beyond the RAM capacity during processing. Use disk-based processing in this case. Lowering `--max-memory`, for example to `1G`, encourages HTTomo to store intermediate data on disk.
+:::
+
+:::
+
+:::
+::::
+::: {.footer}
+[HTTomo run guide: max-memory](https://diamondlightsource.github.io/httomo/howto/how_to_run/run_in_depth.html#max-memory)
+:::
+
+## GPU processing - faster libraries
+
+HTTomo is designed to optimise GPU-accelerated processing, making it the preferred approach for achieving high throughput with supported methods.
+
+### GPU accelerated methods from the [HTTomoLibGPU](https://diamondlightsource.github.io/httomolibgpu/) library vs TomoPy CPU implementations.
+
+![Source: Kazantsev et al., manuscript in preparation *"High-throughput GPU tomographic software HTTomo for high-performance computing at Diamond Light Source"*.](images/timing_analysis_dark.png){
+  width=100%
+  fig-alt="CPU vs GPU methods with transfers"
+  fig-align="center"
+}
+
+## GPU processing: data management
+
+HTTomo aims to process **as much data as safely fits in GPU memory** to reduce transfer overhead and improve GPU utilisation. The framework therefore follows two main principles:
+
+:::: {.columns}
+::: {.column width="49%"}
+
+### Larger 3D blocks within the memory budget
+
+- HTTomo divides data chunks into **blocks** for GPU processing.
+- Memory estimators use **free VRAM** and each method’s requirements to determine how many slices fit.
+- The **most memory-demanding method in a section** limits the block size.
+
+![](images/block3D_data.png){
+  width=60%
+  fig-alt="3d data block"
+  fig-align="center"
+}
+
+:::
 ::: {.column width="51%"}
-### Why it can scale well
 
-**Share the data:** ranks work on different portions of the volume. Many projection operations and slice reconstructions can run concurrently.
+::: {.fragment}
+### Method chains reduce transfers
 
-**Match the method:** HTTomo redistributes data when processing changes between projection and sinogram access patterns.
+HTTomo [chains](#sections) compatible GPU methods within a **section**, keeping each block on the GPU between methods.
 
-**Keep useful work large:** sufficiently large datasets give each rank enough computation to outweigh communication and startup costs.
+**For each block:**
 
-### Measuring the benefit
+1. Transfer the block to the GPU.
+2. Run the GPU method chain.
+3. Return the result when CPU access is needed.
 
-$$S_N=\frac{T_1}{T_N}$$
+![](images/block_chain3d.png){
+  width=100%
+  fig-alt="chain of 3D proceessing methods"
+  fig-align="center"
+}
 
-Ideal speedup is $N$; actual gains depend on disk I/O, communication and workload size.
-
-::: {.smaller}
-**Try 1, 2 and 4 ranks.** Keep data and YAML fixed. Budget CPU threads per rank to avoid oversubscription. Extra ranks sharing one GPU may not help.
-
-[Running HTTomo](https://diamondlightsource.github.io/httomo/howto/how_to_run/outside_diamond.html) · [Efficient pipelines](https://diamondlightsource.github.io/httomo/howto/process_lists/process_list_configure.html)
-:::
-:::
 :::
 
-## Adding your own methods to HTTomo {#own_methods .smaller}
+:::
+::::
+
+## Padding enables true 3D processing
+
+A 3D method needs neighbouring slices. Padding preserves that context when HTTomo splits a volume into blocks.
+
+:::: {.columns}
+::: {.column width="42%"}
+
+### Why padding is needed
+
+- A **2D method** processes each frame independently, so a block boundary does not interrupt its neighbourhood.
+- A **3D method** uses information along all three axes. At a block edge, it needs slices held in the neighbouring block.
+- HTTomo pads the block with this surrounding data, allowing the method to satisfy its boundary conditions and avoid seam-like artefacts.
+
+:::
+::: {.column width="58%"}
+
+::: {.fragment}
+
+### Denoising comparison
+
+::: {.image-row}
+![2D denoising method](images/denoising2d.jpg){fig-alt="2D denoising" fig-align="center"}
+
+![3D denoising with padding](images/denoising3d_pad5.jpg){fig-alt="3D denoising" fig-align="center"}
+:::
+
+- Consistent resolution in all three dimensions
+- Better removal of volumetric artefacts and improved contrast
+- Access to advanced 3D filters and iterative reconstruction methods
+
+:::
+:::
+::::
+
+::: {.footer}
+[HTTomo padding feature](https://diamondlightsource.github.io/httomo/howto/httomo_features/padding.html)
+:::
 
 
+## Adding a processing method to HTTomo {#own_methods}
 
+HTTomo runs methods from external Python libraries. Integration adds the metadata and configuration that the framework needs. The following steps need to be performed:
+
+:::: {.columns}
+::: {.column width="50%"}
+
+### 1. Implement the method
+
+Add a tested Python function to a supported library: [HTTomoLib](https://github.com/DiamondLightSource/httomolib) or [HTTomoLibGPU](https://github.com/DiamondLightSource/httomolibgpu), or a separate installable package.
+
+
+::: {.fragment}
+
+### 2. Register its properties
+
+Add the method to the corresponding `httomo-backends` YAML [library file](https://github.com/DiamondLightSource/httomo-backends/tree/main/httomo_backends/methods_database/packages/backends). Declare its data pattern, implementation type, dimension changes, padding and save behaviour.
+
+For a CPU method:
+
+```yaml
+implementation: cpu
+memory_gpu: None
+```
+
+:::
+
+
+:::
+::: {.column width="50%"}
+
+::: {.fragment}
+
+### 3. Check the wrapper
+
+Choose the wrapper that matches the method’s input and output. A shape-preserving filter with one data input and one output normally uses the **generic wrapper**.
+
+A new wrapper requires additional framework work.
+
+:::
+::: {.fragment}
+
+### 4. Provide a method template
+
+Create the YAML template used in a process list. Write it manually or use the `httomo-backends` [YAML generator](https://github.com/DiamondLightSource/httomo-backends/blob/main/httomo_backends/scripts/yaml_templates_generator.py).
+
+Then test the function, backend metadata and pipeline execution together.
+:::
+:::
+::::
+
+::: {.footer}
+[HTTomo contribution guide](https://diamondlightsource.github.io/httomo/developers/how_to_contribute.html)
+:::
+
+## Example: adding a CPU Gaussian filter
+
+A shape-preserving filter can use the **generic wrapper** and needs no GPU-memory estimate.
+
+:::: {.columns}
+::: {.column width="46%"}
+
+### Python library
+
+```python
+# my_filters/filters.py
+import scipy.ndimage as ndi
+
+def gaussian_filter(
+    data, sigma=1.0
+):
+    return ndi.gaussian_filter(
+        data, sigma
+    )
+```
+
+::: {.fragment}
+
+### Process-list template
+
+```yaml
+- method: gaussian_filter
+  module_path: my_filters.filters
+  parameters:
+    sigma: 1.0
+```
+
+Package and test `my_filters` so it is importable in the HTTomo environment.
+
+:::
+
+:::
+::: {.column width="54%"}
+::: {.fragment}
+
+### `httomo-backends` library entry
+
+```yaml
+# my_filters.yaml
+filters:
+  gaussian_filter:
+    pattern: all
+    output_dims_change: False
+    implementation: cpu
+    memory_gpu: None
+    save_result_default: False
+    padding: False
+```
+
+The **generic wrapper** imports the function, passes data blocks and parameters. Then returns the processed data.
+:::
+:::
+::::
+
+::: {.footer}
+[Contribution guide](https://diamondlightsource.github.io/httomo/developers/how_to_contribute.html)
+:::
+
+## HPC processing - one cluster node
+
+### Using 4 NVIDIA RTX PRO 6000 Blackwel GPUs
+
+![Source: Kazantsev et al., manuscript in preparation *"High-throughput GPU tomographic software HTTomo for high-performance computing at Diamond Light Source"*.](images/blackwell4_208607_part1.png){
+  width=100%
+  fig-alt="Blackwell 4 GPUs run"
+  fig-align="left"
+}
+
+## HPC processing - multinode
+
+### Using up to 4 NVidia V100s nodes
+
+![Source: Kazantsev et al., manuscript in preparation *"High-throughput GPU tomographic software HTTomo for high-performance computing at Diamond Light Source"*.](images/httomo-v100-multinode-performance.png){
+  width=100%
+  fig-alt="V100 multinode"
+  fig-align="left"
+}
+
+## Acknowledgements
+
+::: {.ack-intro}
+HTTomo is a collective effort by software/method developers and beamline scientists at Diamond Light Source.
+:::
+
+:::: {.columns .ack-columns}
+::: {.column width="22%"}
+
+### Software developers:
+
+- **Daniil Kazantsev**
+- **Yousef Moazzam**
+- **Naman Gera**
+- **Jessica Verschoyle**
+- **Timothy Poon**
+- **Benedikt Daurer**
+
+:::
+::: {.column width="44%"}
+
+### Beamline community
+
+We thank Diamond’s beamline scientists for:
+
+- Representative datasets and scientific requirements
+- Software testing and validation on real experiments
+- Feedback that improves methods, pipelines and usability
+
+:::
+::: {.column width="33%"}
+
+### Diamond Light Source
+
+We acknowledge Diamond Light Source and its technical teams for providing:
+
+- Beamline and experimental facilities
+- HPC and GPU computing resources
+- Data infrastructure and operational support
+
+:::
+::::
+
+::: {.footer}
+Thanks for the participation!
+:::
