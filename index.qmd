@@ -298,7 +298,6 @@ You should now have:
 - a working `python -m httomo` command
 
 
-
 ## HTTomo framework (main concepts)
 
 ![](images/cool_httomo_framework_autogen.png){.nostretch fig-align="center" width="70%"}
@@ -346,10 +345,10 @@ GPU 3
 
 ## {#mpi_figure}
 
-<object data="images/mpi_chunks_reslice_oriented.svg"
-        type="image/svg+xml"
-        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
-</object>
+![](images/mpi_chunks_reslice_oriented.svg){
+  width=100%
+  fig-alt="MPI in HTTomo"
+}
 
 ::: {.footer}
 [Benefits of using Open MPI in HTTomo](#openmpi-benefits)
@@ -358,10 +357,10 @@ GPU 3
 
 ## {#reslice}
 
-<object data="images/httomo_reslicing_dark.svg"
-        type="image/svg+xml"
-        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
-</object>
+![](images/httomo_reslicing_dark.svg){
+  width=100%
+  fig-alt="reslicing operation"
+}
 
 ::: {.footer}
 [More on reslice](https://diamondlightsource.github.io/httomo/introduction/indepth/reslice.html)
@@ -369,10 +368,10 @@ GPU 3
 
 ## {#sections}
 
-<object data="images/httomo_gpu_section.svg"
-        type="image/svg+xml"
-        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
-</object>
+![](images/httomo_gpu_section.svg){
+  width=100%
+  fig-alt="HTTomo GPU section"
+}
 
 ::: {.footer}
 [More on sections](https://diamondlightsource.github.io/httomo/introduction/indepth/sections.html)
@@ -380,18 +379,17 @@ GPU 3
 
 ## 
 
-<object data="images/gpu_memory_estimation_vector.svg"
-        type="image/svg+xml"
-        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
-</object>
-
+![](images/gpu_memory_estimation_vector.svg){
+  width=100%
+  fig-alt="HTTomo GPU memory estimation"
+}
 
 ## 
 
-<object data="images/httomo_wrappers.svg"
-        type="image/svg+xml"
-        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
-</object>
+![](images/httomo_wrappers.svg){
+  width=100%
+  fig-alt="HTTomo wrappers"
+}
 
 ::: {.footer}
 [Enabling own methods in HTTomo](#own_methods)
@@ -400,17 +398,17 @@ GPU 3
 
 ## 
 
-<object data="images/gpu_reconstruction_httomo.svg"
-        type="image/svg+xml"
-        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
-</object>
+![](images/gpu_reconstruction_httomo.svg){
+  width=100%
+  fig-alt="GPU reconstruction ecosystem"
+}
 
-## 
+##
 
-<object data="images/httomo_features.svg"
-        type="image/svg+xml"
-        style="display:block; width:100%; aspect-ratio:16/9; margin:auto;">
-</object>
+![](images/httomo_features.svg){
+  width=100%
+  fig-alt="HTTomo features"
+}
 
 ::: {.footer}
 [HTTomo features](https://diamondlightsource.github.io/httomo/howto/httomo_features.html)
@@ -519,11 +517,10 @@ A sinogram view of `tomodata_synth.nxs` using [DAWN](https://dawnsci.org/)
   fig-alt="Dawn synthethic"
 }
 
-
 ## HTTomo loader and data previewing {.smaller}
 
 ::: {.columns}
-::: {.column width="49%"}
+::: {.column width="40%"}
 ###  YAML for the HDF5/nxs loader
 
 ```yaml
@@ -534,10 +531,10 @@ A sinogram view of `tomodata_synth.nxs` using [DAWN](https://dawnsci.org/)
     image_key_path: auto
     rotation_angles: auto
     preview:
-      detector_x: # horizontal cropping
+      detector_x: # horizontal previewing
         start: null
         stop: null
-      detector_y: # vertical cropping
+      detector_y: # vertical previewing
         start: null
         stop: null
     darks: null
@@ -546,7 +543,7 @@ A sinogram view of `tomodata_synth.nxs` using [DAWN](https://dawnsci.org/)
 
 :::
 
-::: {.column width="51%"}
+::: {.column width="59%"}
 
 ::: {.fragment}
 
@@ -588,7 +585,7 @@ or use `mid` keyword to select the middle part:
 :::
 
 
-## Building HTTomo pipeline with YAML templates {.small}
+## Building HTTomo pipeline using YAML templates {.small}
 
 ::: {.columns}
 ::: {.column width="49%"}
@@ -637,7 +634,7 @@ From [HTTomolibgpu normalization templates](https://diamondlightsource.github.io
 :::
 :::
 
-## Exercise 1: pre-processing (d/f correction) {.small}
+## Exercise 1: pre-processing (d/f correction) {#exercise1 .small}
 
 ::: {.columns}
 ::: {.column width="49%"}
@@ -673,7 +670,7 @@ The Beer–Lambert model converts transmission into the line integrals used in r
 
 1. Save your loader configuration as `pipeline_synth.yaml`. Select a small vertical preview (e.g., 10 rows/slices).
 2. Copy **normalize**, then **minus_log** from the [TomoPy YAML templates](https://diamondlightsource.github.io/httomo-backends/api/tomopy.prep.normalize.html) below the loader.
-3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) into the HDF5 file the result of **minus_log**.
+3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) into the HDF5 file for  **minus_log**.
 4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
 ```bash
 python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
@@ -688,7 +685,7 @@ python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
 :::
 
 
-## Exercise 2: pre-processing (dezingering) {.small}
+## Exercise 2: pre-processing (de-zingering) {#exercise2 .small}
 
 ::: {.columns}
 ::: {.column width="49%"}
@@ -717,9 +714,9 @@ Uses a **local 3D median** to selectively replace outliers, retaining other valu
 
 ### Task steps:
 
-1. Use `pipeline_synth.yaml` from Exercise 1 to add **zinger removal** method using the TomoPy's [remove_outlier3d](https://tomopy.readthedocs.io/en/stable/_modules/tomopy/misc/corr.html#remove_outlier3d). 
+1. Use `pipeline_synth.yaml` from [Exercise 1](#exercise1) to add **zinger removal** method using the TomoPy's [remove_outlier3d](https://tomopy.readthedocs.io/en/stable/_modules/tomopy/misc/corr.html#remove_outlier3d). 
 2. Add the appropriate [TomoPy YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.misc.corr.html) right after the loader and before any other method.
-3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) into the HDF5 file the result of **remove_outlier3d**.
+3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) into the HDF5 file for the result of **remove_outlier3d**.
 4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
 ```bash
 python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
@@ -738,15 +735,38 @@ python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
 :::
 
 
-## Exercise 3: pre-processing (de-stripe) {.smaller}
+## Exercise 3: pre-processing (de-stripe) {#exercise3 .small}
 
 ::: {.columns}
-::: {.column width="49%"}
+::: {.column width="52%"}
 ### Your task ~ 7 minutes
 
-Use `tomodata_synth.nxs` to remove stripes from the sinograms.
+Use `tomodata_synth.nxs` to remove **stripes** from the sinograms or **rings** from reconstructions.
 
-1. Use `pipeline_synth.yaml` from Exercises 1-2 and add a **stripe removal** method from TomoPy's [selection](https://tomopy.readthedocs.io/en/stable/api/tomopy.prep.stripe.html). 
+Residual detector-response errors, defective pixels or changing flat fields can leave intensity errors at fixed detector positions across many projections.
+
+::: {.fragment}
+
+### Methods to compare
+
+TomoPy [provides](https://tomopy.readthedocs.io/en/stable/api/tomopy.prep.stripe.html) several methods to remove stripes:
+
+- **`remove_stripe_fw`**: Fourier–wavelet filtering of stripe patterns.
+
+- **`remove_stripe_based_sorting`**: sorting-based correction of full and partial stripes.
+
+- **`remove_all_stripe`**: combines approaches for several stripe types, including large and unresponsive stripes.
+:::
+:::
+::: {.column width="3%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="45%"}
+
+### Task steps:
+
+1. Use `pipeline_synth.yaml` from [Exercise 2](#exercise2) and add a **stripe removal** method from TomoPy's [selection](https://tomopy.readthedocs.io/en/stable/api/tomopy.prep.stripe.html). 
 2. Add the appropriate [TomoPy YAML template](https://diamondlightsource.github.io/httomo-backends/api/tomopy.prep.stripe.html) after all methods.
 3. Add [saving](https://diamondlightsource.github.io/httomo/howto/process_lists/save_results/save_results.html#example-1-save-output-of-a-specific-method) the result of **stripe removal** method into the HDF5 file.
 4. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
@@ -757,23 +777,7 @@ python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```bash
 python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
 ```
-6. Inspect the results with [myhdf5](https://myhdf5.hdfgroup.org/) or any HDF5 viewer. As to compare data before and after filtering.
-:::
-
-::: {.column width="51%"}
-### What is this for?
-
-Residual detector-response errors, defective pixels or changing flat fields can leave intensity errors at fixed detector positions across many projections.
-
-These form **stripes in sinograms** and **rings in reconstructed slices**.
-
-### Methods to compare
-
-TomoPy [provides](https://tomopy.readthedocs.io/en/stable/api/tomopy.prep.stripe.html) several methods to remove stripes, some to try:
-- **`remove_stripe_fw`**: Fourier–wavelet filtering of stripe patterns.
-- **`remove_stripe_based_sorting`**: sorting-based correction of full and partial stripes.
-- **`remove_all_stripe`**: combines approaches for several stripe types, including large and unresponsive stripes.
-
+6. Inspect the results.
 
 :::
 :::
@@ -791,7 +795,7 @@ TomoPy [provides](https://tomopy.readthedocs.io/en/stable/api/tomopy.prep.stripe
 4. Inspecting the logs
 
 
-## Exercise 4: reconstruction {.smaller}
+## Exercise 4: reconstruction {#exercise4 .small}
 
 ::: {.columns}
 ::: {.column width="49%"}
@@ -799,7 +803,31 @@ TomoPy [provides](https://tomopy.readthedocs.io/en/stable/api/tomopy.prep.stripe
 
 Reconstructing `tomodata_synth.nxs` after pre-processing.
 
-1. Use `pipeline_synth.yaml` from Exercises 1-3 and add a [reconstruction](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.algorithm.html) module from TomoPy. 
+After correction and negative log, each ray measures a **line integral of attenuation**:
+
+$$p_\theta(s)=\int_{\mathrm{ray}(\theta,s)}\mu(x,y)\,d\ell$$
+
+Reconstruction estimates **$\mu(x,y)$** from projections at many angles and parallel-beam data normally span **180°**, with sufficient angular sampling.
+
+::: {.fragment}
+
+TomoPy's **`gridrec`** is based on **Fourier slice theorem:** the 1D Fourier transform of a projection gives a radial line in the slice's 2D Fourier transform.
+
+**`gridrec`** maps these Fourier samples onto a grid and inverts the transform. Reconstruction filters control the balance between resolution and noise.
+:::
+:::
+
+::: {.column width="3%"}
+<!-- empty column to create gap -->
+:::
+
+::: {.column width="47%"}
+
+::: {.fragment}
+
+### Tasks list:
+
+1. Use `pipeline_synth.yaml` from [Exercise 3](#exercise3) and add a [reconstruction](https://tomopy.readthedocs.io/en/stable/api/tomopy.recon.algorithm.html) module from TomoPy. 
 2. Add the following reconstruction YAML template after all methods.
 ```yaml
 - method: recon
@@ -811,30 +839,8 @@ Reconstructing `tomodata_synth.nxs` after pre-processing.
     filter_name: shepp # Shepp-Logan filter
     init_recon: null
 ```
-3. Validate the YAML file with [YAML checker](https:/K/diamondlightsource.github.io/httomo/utilities/yaml_checker.html):
-```bash
-python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
-```
-4. Run the pipeline with:
-```bash
-python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
-```
-6. Inspect the results with [myhdf5](https://myhdf5.hdfgroup.org/) or any HDF5 viewer.
+3. Validate the YAML file, run the pipeline and inspect the results.
 :::
-
-::: {.column width="51%"}
-### What is this for?
-
-After correction and negative log, each ray measures a **line integral of attenuation**:
-
-$$p_\theta(s)=\int_{\mathrm{ray}(\theta,s)}\mu(x,y)\,d\ell$$
-
-Reconstruction estimates **$\mu(x,y)$** from projections at many angles and parallel-beam data normally span **180°**, with sufficient angular sampling.
-
-TomoPy's **`gridrec`** is based on **Fourier slice theorem:** the 1D Fourier transform of a projection gives a radial line in the slice's 2D Fourier transform.
-
-**`gridrec`** maps these Fourier samples onto a grid and inverts the transform. Reconstruction filters control the balance between resolution and noise.
-
 :::
 
 ::: {.footer}

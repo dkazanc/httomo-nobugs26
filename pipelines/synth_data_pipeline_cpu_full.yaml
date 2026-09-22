@@ -1,0 +1,52 @@
+# --- Standard tomography loader for NeXus files. ---
+- method: standard_tomo
+  module_path: httomo.data.hdf.loaders
+  parameters:
+    data_path: auto
+    image_key_path: auto
+    rotation_angles: auto
+    preview:
+      detector_x:   # horizontal data previewing/cropping.
+        # when null, the full data dimension is used, i.e., no previewing
+        start: null
+        stop: null
+      detector_y:
+        start: mid
+        start_offset : -10
+        stop: mid
+        stop_offset : 10    
+    darks: null
+    flats: null
+# remove dezingers
+- method: remove_outlier3d
+  module_path: tomopy.misc.corr
+  parameters:
+    dif: 10000
+    size: 3
+# dark/flat field correction
+- method: normalize
+  module_path: tomopy.prep.normalize
+  parameters:
+    cutoff: null
+    averaging: mean
+# remove stripes to minimise ring artefacts
+- method: remove_stripe_fw
+  module_path: tomopy.prep.stripe
+  parameters:
+    level: null
+    wname: db5
+    sigma: 2
+    pad: true
+# negative log
+- method: minus_log
+  module_path: tomopy.prep.normalize
+  parameters: {}
+# reconstruction
+- method: recon
+  module_path: tomopy.recon.algorithm
+  parameters:
+    center: null
+    sinogram_order: false
+    algorithm: gridrec
+    filter_name: shepp
+    init_recon: null
