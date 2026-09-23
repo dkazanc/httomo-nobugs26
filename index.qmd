@@ -166,10 +166,6 @@ Then verify the command-line interface:
 python -m httomo --help
 ```
 
-::: {.callout-note}
-You can install `CuPy` and `httomolibgpu` without a GPU. However, to process data on the CPU, use methods from `TomoPy` and `httomolib`.
-:::
-
 ::: {.footer}
 [HTTomo Linux installation](https://diamondlightsource.github.io/httomo/howto/installation.html)
 :::
@@ -254,17 +250,16 @@ For macOS, confirm that HDF5 has MPI support:
 ```bash
 python -c "import h5py; print(h5py.get_config().mpi)"
 ```
-
+:::{.result}
 Expected result: `True`
-
+:::
 ## Optional: run the HTTomo tests {.small}
 
 ```bash
 git clone https://github.com/DiamondLightSource/httomo.git
 cd httomo
 
-conda install -c conda-forge \
-  pytest pytest-cov pytest-xdist pytest-mock plumbum
+conda install -c conda-forge pytest pytest-cov pytest-xdist pytest-mock plumbum
 ```
 
 CPU tests:
@@ -1667,6 +1662,8 @@ Few efforts have been made to ensure this:
 ![Source: Kazantsev et al., manuscript in preparation *“High-throughput GPU tomographic software HTTomo for high-performance computing at Diamond Light Source”*.](images/timing_analysis_dark.png){width="100%" fig-alt="CPU vs GPU methods with transfers" fig-align="center"}
 
 ## GPU-accelerated reconstruction {#gpu_methods_recon}
+
+### Reconstructing `[1800, 200, 2560]` data chunk on Nvidia V100.
 
 ![](images/recon_methods_comparison.png){width="100%" fig-alt="GPU recon comparison" fig-align="center"}
 
