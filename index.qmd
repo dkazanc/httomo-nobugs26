@@ -437,8 +437,8 @@ conda install -c httomo -c conda-forge tomophantom==3.1.5 psutil scikit-image
 From the command line and from the `synthdata` folder run the following command:
 
 ```bash
-python -m tomophantom.scripts.nxs_generator --realistic -m 18 -s 256 512 740 \ 
-  --flats 20 --darks 10 --source-intensity 20000 --artefacts artefacts.json \
+python -m tomophantom.scripts.nxs_generator --realistic -m 18 -s 256 512 740 && 
+  --flats 20 --darks 10 --source-intensity 20000 --artefacts artefacts.json &&
   --flat-settings flat_settings.json --seed 1 -o tomodata_synth.nxs
 ```
 
