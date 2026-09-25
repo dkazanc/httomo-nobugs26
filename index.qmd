@@ -678,7 +678,7 @@ python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```
 5. Run the pipeline with:
 ```bash
-python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
+python -m httomo run tomodata_synth.nxs pipeline_synth.yaml output/
 ```
 6. Inspect the results with [DAWN](https://dawnsci.org/) or [myhdf5](https://myhdf5.hdfgroup.org/), or any HDF5 viewer.
 :::
@@ -727,7 +727,7 @@ python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```
 5. Run the pipeline with:
 ```bash
-python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
+python -m httomo run tomodata_synth.nxs pipeline_synth.yaml output/
 ```
 6. Inspect the results (compare data before and after filtering).
 :::
@@ -781,7 +781,7 @@ python -m httomo check pipeline_synth.yaml tomodata_synth.nxs
 ```
 5. Run the pipeline with:
 ```bash
-python -m httomo run pipeline_synth.yaml tomodata_synth.nxs output/
+python -m httomo run tomodata_synth.nxs pipeline_synth.yaml output/
 ```
 6. Inspect the results.
 :::
