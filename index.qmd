@@ -1,14 +1,14 @@
 ---
 title: "HTTomo - a high-throughput tomography software in Python for large data processing"
-subtitle: "Satellite hands-on session - NOBUGS 2026"
+subtitle: "Full tutorial with excercises"
 author:
-  - name: "Daniil Kazantsev"
-    affiliation: "Diamond Light Source, UK"
-  - name: "Naman Gera"
+  - name: "Imaging Team (part of DAG)"
     affiliation: "Diamond Light Source, UK"
 ---
 
+## Workshop objectives
 
+<!--
 ## Workshop agenda
 
 | Time | Session |
@@ -20,9 +20,7 @@ author:
 | **10:25–10:45** | ☕ **Break** |
 | **10:45–11:30** | **Reconstruction, real data** — reconstruction, centering, sweeps and outputs |
 | **11:30–12:00** | **Advanced concepts** — large data, GPU processing, HPC |
-
-
-## Workshop objectives
+-->
 
 By the end of this session, you will be able to:
 
@@ -33,7 +31,6 @@ By the end of this session, you will be able to:
 - visualise the results
 - perform parameter sweeps
 - learn on more advanced concepts of HTTomo in application to GPU and HPC data processing
-
 
 ## 
 
